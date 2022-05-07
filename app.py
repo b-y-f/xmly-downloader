@@ -2,6 +2,8 @@ import requests
 import urllib.request
 import csv
 import os
+import sys
+from tqdm import tqdm
 
 
 
@@ -24,11 +26,12 @@ headers = {
     'xm-sign': '24393343084be486d4ce4228bc83f4a8(92)0(21)1650440097876',
 }
 
-def download(file_in, out_dir="downs"):
+def download(file_in):
+    out_dir=file_in.split('.')[0]
     with open(file_in, newline='') as csvfile:
         reader = csv.reader(csvfile)
         next(reader)
-        for row in reader:
+        for row in tqdm(reader):
             uid = row[0].split('/')[-1]
             name = row[1].strip()
             res = requests.get(get_url(uid), headers=headers).json()
@@ -39,6 +42,11 @@ def download(file_in, out_dir="downs"):
             urllib.request.urlretrieve(url, os.path.join(path,name+'.mp4') )
 
 
-download('ximalaya.csv')
+if __name__ == "__main__":
+    if len(sys.argv)>1:
+        download(sys.argv[1])
+    else:
+        print('Please include parsed csv file.')
+
 
 
