@@ -26,12 +26,20 @@ headers = {
     'xm-sign': '24393343084be486d4ce4228bc83f4a8(92)0(21)1650440097876',
 }
 
-def download(file_in):
-    out_dir=file_in.split('.')[0]
+def get_total_rows(file_in):
     with open(file_in, newline='') as csvfile:
         reader = csv.reader(csvfile)
         next(reader)
-        for row in tqdm(reader):
+        total = len(list(reader))
+    return total
+
+def download(file_in):
+    out_dir=file_in.split('.')[0]
+
+    with open(file_in, newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)
+        for row in tqdm(reader, total=get_total_rows(file_in)):
             uid = row[0].split('/')[-1]
             name = row[1].strip()
             res = requests.get(get_url(uid), headers=headers).json()
@@ -39,7 +47,8 @@ def download(file_in):
             path = f'./{out_dir}'
             if not os.path.exists(path):
                 os.makedirs(path)
-            urllib.request.urlretrieve(url, os.path.join(path,name+'.mp4') )
+            urllib.request.urlretrieve(url, os.path.join(path,str(index) + name + '.mp4') )
+            index += 1
 
 
 if __name__ == "__main__":
