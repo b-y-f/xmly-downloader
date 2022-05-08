@@ -2,29 +2,15 @@ import requests
 import urllib.request
 import csv
 import os
-import sys
 from tqdm import tqdm
+import argparse
+import const
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', action='store_true', help="toggle if add index for filename")
+parser.add_argument('file_input', type=str, help='file input')
+args = parser.parse_args()
 
-
-def get_url(id): return f"https://www.ximalaya.com/revision/play/v1/audio?id={id}&ptype=1"
-
-
-headers = {
-    'Accept': '*/*',
-    'Accept-Language': 'en-CN,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
-    'Connection': 'keep-alive',
-    'DNT': '1',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-origin',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36',
-    'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="100", "Google Chrome";v="100"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"macOS"',
-    'sec-gpc': '1',
-    'xm-sign': '24393343084be486d4ce4228bc83f4a8(92)0(21)1650440097876',
-}
 
 def get_total_rows(file_in):
     with open(file_in, newline='') as csvfile:
@@ -33,27 +19,35 @@ def get_total_rows(file_in):
         total = len(list(reader))
     return total
 
-def download(file_in):
+def index_toggle(index_arg):
+    return False if not index_arg else index_arg
+
+
+def download(file_in=args.file_input, add_index=index_toggle(args.i)):
     out_dir=file_in.split('.')[0]
 
     with open(file_in, newline='') as csvfile:
         reader = csv.reader(csvfile)
         next(reader)
+        index= 1
         for row in tqdm(reader, total=get_total_rows(file_in)):
             uid = row[0].split('/')[-1]
             name = row[1].strip()
-            res = requests.get(get_url(uid), headers=headers).json()
+            res = requests.get(const.get_url(uid), headers=const.headers).json()
             url = res['data']['src']
             path = f'./{out_dir}'
             if not os.path.exists(path):
                 os.makedirs(path)
-            urllib.request.urlretrieve(url, os.path.join(path,str(index) + name + '.mp4') )
+            if add_index:
+                urllib.request.urlretrieve(url, os.path.join(path, "".join([str(index)," " , name , '.mp4'])) )
+            else:
+                urllib.request.urlretrieve(url, os.path.join(path, "".join([name , '.mp4'])) )
             index += 1
 
 
 if __name__ == "__main__":
-    if len(sys.argv)>1:
-        download(sys.argv[1])
+    if args.file_input:
+        download(args.file_input)
     else:
         print('Please include parsed csv file.')
 
