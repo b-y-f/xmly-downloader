@@ -6,10 +6,6 @@ from tqdm import tqdm
 import argparse
 import const
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-i', action='store_true', help="toggle if add index for filename")
-parser.add_argument('file_input', type=str, help='file input')
-args = parser.parse_args()
 
 
 def get_total_rows(file_in):
@@ -19,11 +15,8 @@ def get_total_rows(file_in):
         total = len(list(reader))
     return total
 
-def index_toggle(index_arg):
-    return False if not index_arg else index_arg
 
-
-def download(file_in=args.file_input, add_index=index_toggle(args.i)):
+def download(file_in, add_index):
     out_dir=file_in.split('.')[0]
 
     with open(file_in, newline='') as csvfile:
@@ -46,8 +39,13 @@ def download(file_in=args.file_input, add_index=index_toggle(args.i)):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', action='store_true', help="toggle if add index for filename")
+    parser.add_argument('file_input', type=str, help='file input')
+    args = parser.parse_args()
+    
     if args.file_input:
-        download(args.file_input)
+        download(args.file_input, args.i)
     else:
         print('Please include parsed csv file.')
 
