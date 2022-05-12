@@ -1,8 +1,9 @@
 import requests
 import urllib.request
+from tqdm import tqdm
 import csv
 import os
-from tqdm import tqdm
+from subprocess import check_output
 import argparse
 import const
 
@@ -16,6 +17,10 @@ def get_total_rows(file_in):
     return total
 
 
+def get_real_url(enc_url):
+    real_url = check_output(['node', './decrypt/app.js',enc_url]).decode('UTF-8')
+    return real_url
+
 def download(file_in, add_index):
     out_dir=file_in.split('.')[0]
 
@@ -27,7 +32,8 @@ def download(file_in, add_index):
             uid = row[0].split('/')[-1]
             name = row[1].strip()
             res = requests.get(const.get_url(uid), headers=const.headers).json()
-            url = res['data']['src']
+            url = res['trackInfo']['playUrlList'][0]['url']
+            url = get_real_url(url)
             path = f'./{out_dir}'
             if not os.path.exists(path):
                 os.makedirs(path)

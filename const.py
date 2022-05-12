@@ -14,4 +14,5 @@ headers = {
     'xm-sign': '24393343084be486d4ce4228bc83f4a8(92)0(21)1650440097876',
 }
 
-def get_url(id): return f"https://www.ximalaya.com/revision/play/v1/audio?id={id}&ptype=1"
+def get_url(id): return f"https://mobile.ximalaya.com/mobile-playpage/track/v3/baseInfo/0?device=web&trackId={id}"
+
