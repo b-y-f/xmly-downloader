@@ -1,4 +1,8 @@
-headers = {
+import os
+
+env_cookie = os.environ.get("XMLY")
+
+headers = {   
     'Accept': '*/*',
     'Accept-Language': 'en-CN,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
     'Connection': 'keep-alive',
@@ -12,6 +16,8 @@ headers = {
     'sec-ch-ua-platform': '"macOS"',
     'sec-gpc': '1',
     'xm-sign': '24393343084be486d4ce4228bc83f4a8(92)0(21)1650440097876',
+    'cookie': env_cookie if env_cookie else ''
+
 }
 
 def get_url(id): return f"https://mobile.ximalaya.com/mobile-playpage/track/v3/baseInfo/0?device=web&trackId={id}"

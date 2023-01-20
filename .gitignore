@@ -1,3 +1,6 @@
+*.csv
+*.mp4
+.DS_Store
 /download/
 node_modules
 
