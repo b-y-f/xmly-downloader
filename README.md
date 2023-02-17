@@ -2,20 +2,26 @@
 
 ## Requirements
 
->Node
+- Node
 
->Python3
+- Python3
 
->Instant Data Scraper
+- Instant Data Scraper
 
 ## How to use?
 
-This you are outside China, please login and export cookie to terminal env. Like `export XMLY='<your cookie>'`. If you are using Chrome below is how to get cookie.
+If you are outside China, please log in to your Ximalaya account and export the cookie to the terminal environment by typing `export XMLY='<your cookie>'`. If you are using Chrome, you can obtain the cookie by following the steps below:
+
 
 ![cookie](assets/cookie.png)
 
 Download chrome extension [`Instant Data Scraper`](https://chrome.google.com/webstore/detail/instant-data-scraper/ofaokhiedipichpaobibbnahnkdoiiah), get all urls and titles as csv file, Only keep `text href` and `title` column.
 
+- Install the Chrome extension Instant Data Scraper.
+- Use the extension to extract all the URLs and titles of the content you want as a CSV file.
+- In the CSV file, only keep the text href and title columns.
+- To use the downloader, follow these steps:
 
-1. Just run `make` in command line
-2. Put csv file and `app.py` in same folder, run `python3 app.py <parsed file path(xx.csv)>` add flag `-i` to add index for some album.
+    1. Run make install in the command line.
+    1. Put the CSV file and app.py in the same folder.
+    1. Run `python3 app.py <parsed file path(xx.csv)>`. If you want to add an index for some album, add the flag `-i`.
