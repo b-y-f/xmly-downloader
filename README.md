@@ -22,6 +22,6 @@ Download chrome extension [`Instant Data Scraper`](https://chrome.google.com/web
 - In the CSV file, only keep the text href and title columns.
 - To use the downloader, follow these steps:
 
-    1. Run `make install` in the command line.
+    1. Run `make` in the command line.
     1. Put the CSV file and app.py in the same folder.
     1. Run `python3 app.py <parsed file path(xx.csv)>`. If you want to add an index for some album, add the flag `-i`.
