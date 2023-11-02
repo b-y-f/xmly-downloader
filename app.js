@@ -1,42 +1,55 @@
-const fs = require('fs');
-const https = require('https');
-const path = require('path');
-const process = require('process');
-
-
+const fs = require("fs");
+const https = require("https");
+const path = require("path");
+const process = require("process");
 
 function read_json(p) {
-    let rawdata = fs.readFileSync(p);
-    return JSON.parse(rawdata);
+  let rawdata = fs.readFileSync(p);
+  return JSON.parse(rawdata);
 }
 
 function get_name_and_url(o) {
-    let info = o["trackInfo"];
-    return [info["title"], info["playPath"]];
+  let info = o["trackInfo"];
+  return [info["title"], info["playPath"]];
 }
 
-function download_file(url, local_path) {
-    let directory = path.dirname(local_path);
-    if (!fs.existsSync(directory)){
-        fs.mkdirSync(directory, { recursive: true });
-    }
-    const file = fs.createWriteStream(local_path);
-    https.get(url, function(response) {
+async function download_file_async(url, local_path) {
+  let directory = path.dirname(local_path);
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true });
+  }
+  const file = fs.createWriteStream(local_path);
+  await new Promise((resolve, reject) => {
+    https
+      .get(url, function (response) {
         response.pipe(file);
-    });
+        file.on("finish", function () {
+          file.close(resolve);
+        });
+      })
+      .on("error", function (err) {
+        fs.unlink(local_path);
+        reject(err.message);
+      });
+  });
 }
 
-function run(bookName, reverse=true) {
-    let D = read_json(bookName);
-    let data = D["data"];
-    if (reverse) {
-        data = data.reverse();
-    }
-    for (let idx = 0; idx < data.length; idx++) {
-        let obj = data[idx];
-        let [name, url] = get_name_and_url(obj);
-        download_file(url, `${bookName.split(".")[0]}/${idx}_${name}.mp4`);
-    }
+async function run(bookName, reverse = true) {
+  let D = read_json(bookName);
+  let data = D["data"];
+  if (reverse) {
+    data = data.reverse();
+  }
+  const totalLength = data.length;
+  for (let idx = 0; idx < data.length; idx++) {
+    let obj = data[idx];
+    let [name, url] = get_name_and_url(obj);
+    await download_file_async(
+      url,
+      `${bookName.split(".")[0]}/${idx}_${name}.mp4`
+    );
+    console.log(`${idx+1}/${totalLength}`);
+  }
 }
 
 let args = process.argv.slice(2);
