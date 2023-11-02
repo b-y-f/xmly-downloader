@@ -2,26 +2,22 @@
 
 ## Requirements
 
-- Node
+- Node.js
 
-- Python3
+## How to use
 
-- Instant Data Scraper
+1. open any one of the audio.
 
-## How to use?
+1. find some link like below ![Alt text](image.png)
 
-If you are outside China, please log in to your Ximalaya account and export the cookie to the terminal environment by typing `export XMLY='<your cookie>'`. If you are using Chrome, you can obtain the cookie by following the steps below:
+1. right click and copy cURL
 
+```bash
+https://www.ximalaya.com/m-revision/page/track/queryRelativeTracksById?trackId=<id>&preOffset=10000&nextOffset=0&countKeys=play&order=2
+```
 
-![cookie](assets/cookie.png)
+1. modify url's `preOffset` parameter to the number of audio per album. `preOffset` means load how many audios.
 
-Download chrome extension [`Instant Data Scraper`](https://chrome.google.com/webstore/detail/instant-data-scraper/ofaokhiedipichpaobibbnahnkdoiiah), get all urls and titles as csv file, Only keep `text href` and `title` column.
+1. open `terminal`, paste and add `> xxx.json`
 
-- Install the Chrome extension Instant Data Scraper.
-- Use the extension to extract all the URLs and titles of the content you want as a CSV file.
-- In the CSV file, only keep the text href and title columns.
-- To use the downloader, follow these steps:
-
-    1. Run `make` in the command line.
-    1. Put the CSV file and app.py in the same folder.
-    1. Run `python3 app.py <parsed file path(xx.csv)>`. If you want to add an index for some album, add the flag `-i`.
+1. run `node app.js <xxx.json>`
