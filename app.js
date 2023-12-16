@@ -13,6 +13,11 @@ function get_name_and_url(o) {
   return [info["title"], info["playPath"]];
 }
 
+function getFileExtension(url) {
+  const parts = url.split(".");
+  return parts[parts.length - 1];
+}
+
 async function download_file_async(url, local_path) {
   let directory = path.dirname(local_path);
   if (!fs.existsSync(directory)) {
@@ -44,11 +49,12 @@ async function run(bookName, reverse = true) {
   for (let idx = 0; idx < data.length; idx++) {
     let obj = data[idx];
     let [name, url] = get_name_and_url(obj);
+    const ext = getFileExtension(url);
     await download_file_async(
       url,
-      `${bookName.split(".")[0]}/${idx}_${name}.mp4`
+      `${bookName.split(".")[0]}/${idx}_${name}.${ext}`
     );
-    console.log(`${idx+1}/${totalLength}`);
+    console.log(`${idx + 1}/${totalLength}`);
   }
 }
 
